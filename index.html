@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
+<title>For Zaha 🤍</title>
+<meta name="description" content="A little world made just for you.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,500&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=DM+Sans:wght@300;400;500&family=Great+Vibes&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ambient canvas layer: stars / particles / hearts -->
+<canvas id="bg-canvas" aria-hidden="true"></canvas>
+<div id="floating-hearts" aria-hidden="true"></div>
+
+<!-- floating music control -->
+<button id="music-toggle" class="music-btn hidden" aria-label="Play or pause music">
+  <span class="music-note">♪</span>
+</button>
+
+<main id="app">
+
+  <!-- ============ SECTION 0 — WELCOME ============ -->
+  <section id="sec-welcome" class="screen active" data-section="welcome">
+    <div class="stars-layer" aria-hidden="true"></div>
+    <div class="glass-card welcome-card reveal-el">
+      <p class="eyebrow">a little world, just for you</p>
+      <h1 class="line line-1">Hey&nbsp;… you <span class="sparkle">✨</span></h1>
+      <p class="line line-2">I made a tiny little world just for you.</p>
+      <p class="line line-3">Are you ready?</p>
+      <button id="btn-begin" class="btn btn-primary">Tap to Begin Our Little Story <span aria-hidden="true">💗</span></button>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 1 — SECRET INTRO ============ -->
+  <section id="sec-intro" class="screen" data-section="intro">
+    <div class="stars-layer" aria-hidden="true"></div>
+    <div class="intro-text-wrap">
+      <p class="intro-line" data-line="1">There's someone who makes ordinary days feel a little more beautiful&hellip;</p>
+      <p class="intro-line" data-line="2">Someone whose smile can quietly change my whole mood.</p>
+      <p class="intro-line" data-line="3">And today&hellip;</p>
+      <p class="intro-line intro-big" data-line="4">That someone is <span class="accent-text">YOU.</span> 🥹💗</p>
+      <p class="intro-line intro-title" data-line="5">Happy Birthday, <span class="script-name">Zaha</span> ✨</p>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 2 — HER PHOTO REVEAL ============ -->
+  <section id="sec-photo" class="screen" data-section="photo">
+    <div class="stars-layer" aria-hidden="true"></div>
+    <p class="pre-caption reveal-el">The prettiest part of my little world&hellip;</p>
+    <div class="photo-frame reveal-el">
+      <div class="photo-glow"></div>
+      <div class="light-sweep"></div>
+      <img id="img-zaha" src="zaha.jpg" alt="Zaha" onerror="this.closest('.photo-frame').classList.add('img-missing')">
+      <div class="frame-fallback">🤍</div>
+    </div>
+    <p class="post-caption reveal-el">Zaha 🤍</p>
+    <p class="small-caption reveal-el">Some people enter your life and somehow make everything feel warmer.</p>
+    <button class="btn btn-ghost btn-next" data-next="date">Keep going <span aria-hidden="true">→</span></button>
+  </section>
+
+  <!-- ============ SECTION 3 — DATE REVEAL ============ -->
+  <section id="sec-date" class="screen" data-section="date">
+    <div class="stars-layer" aria-hidden="true"></div>
+    <div class="date-display reveal-el">
+      <span class="date-num">30</span>
+      <span class="date-dot">•</span>
+      <span class="date-num">08</span>
+      <span class="date-dot">•</span>
+      <span class="date-num date-infinity">∞</span>
+    </div>
+    <p class="date-caption reveal-el">The day my favorite person came into this world.</p>
+    <p class="date-caption date-caption-2 reveal-el">And today, I get to celebrate <span class="accent-text">YOU.</span></p>
+    <button class="btn btn-ghost btn-next" data-next="cake">Continue <span aria-hidden="true">→</span></button>
+  </section>
+
+  <!-- ============ SECTION 4 — INTERACTIVE CAKE ============ -->
+  <section id="sec-cake" class="screen" data-section="cake">
+    <div class="stars-layer" aria-hidden="true"></div>
+    <p class="cake-line reveal-el">One little wish&hellip;</p>
+    <p class="cake-line cake-line-2 reveal-el">Close your eyes&hellip;</p>
+
+    <div class="cake-wrap reveal-el">
+      <svg viewBox="0 0 260 220" class="cake-svg" aria-hidden="true">
+        <ellipse cx="130" cy="200" rx="100" ry="14" class="cake-shadow"/>
+        <rect x="45" y="150" width="170" height="45" rx="10" class="cake-tier cake-tier-2"/>
+        <rect x="65" y="100" width="130" height="55" rx="10" class="cake-tier cake-tier-1"/>
+        <path class="cake-drip" d="M65,100 q10,20 0,30 q-10,-10 0,-30 M95,100 q10,25 0,35 q-10,-15 0,-35 M130,100 q10,18 0,28 q-10,-12 0,-28 M165,100 q10,25 0,35 q-10,-15 0,-35 M195,100 q10,20 0,30 q-10,-10 0,-30" />
+        <circle cx="90" cy="130" r="6" class="cake-berry"/>
+        <circle cx="150" cy="132" r="6" class="cake-berry"/>
+        <circle cx="175" cy="128" r="6" class="cake-berry"/>
+        <g class="candle-group" data-candle="1">
+          <rect x="95" y="70" width="8" height="32" rx="2" class="candle"/>
+          <ellipse cx="99" cy="63" rx="6" ry="10" class="flame"/>
+        </g>
+        <g class="candle-group" data-candle="2">
+          <rect x="126" y="62" width="8" height="40" rx="2" class="candle"/>
+          <ellipse cx="130" cy="55" rx="6" ry="10" class="flame"/>
+        </g>
+        <g class="candle-group" data-candle="3">
+          <rect x="157" y="70" width="8" height="32" rx="2" class="candle"/>
+          <ellipse cx="161" cy="63" rx="6" ry="10" class="flame"/>
+        </g>
+      </svg>
+    </div>
+
+    <button id="btn-wish" class="btn btn-primary reveal-el">Make a Wish <span aria-hidden="true">🎂✨</span></button>
+
+    <div id="cake-aftermath" class="cake-aftermath">
+      <p class="cake-after-line">I hope every beautiful thing you deserve finds its way to you.</p>
+      <p class="cake-after-line cake-after-line-2">Happy Birthday, my love. 🥹🤍</p>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 5 — CONFETTI CELEBRATION ============ -->
+  <section id="sec-celebrate" class="screen" data-section="celebrate">
+    <div class="stars-layer" aria-hidden="true"></div>
+    <h2 class="celebrate-title reveal-el">Today is officially your day. 👑</h2>
+    <p class="celebrate-sub reveal-el">So let me show you a few reasons why you are so special to me&hellip;</p>
+    <button class="btn btn-ghost btn-next scroll-indicator" data-next="memories" aria-label="Continue to our memories">
+      <span class="chevron">⌄</span>
+    </button>
+  </section>
+
+  <!-- ============ SECTION 6 — MEMORY JOURNEY ============ -->
+  <section id="sec-memories" class="screen" data-section="memories">
+    <div class="stars-layer" aria-hidden="true"></div>
+    <h2 class="memories-title reveal-el">A Few Little Pieces of Us 🤍</h2>
+    <p class="memories-sub reveal-el">Some memories are just moments&hellip;<br>but some moments quietly become forever.</p>
+
+    <div class="memory-viewer reveal-el">
+      <button class="mem-nav mem-prev" id="mem-prev" aria-label="Previous memory">‹</button>
+      <div class="memory-photo-wrap">
+        <div class="memory-photo-frame" id="memory-frame">
+          <img id="memory-img" src="me1.jpg" alt="A memory of us" loading="lazy" onerror="this.closest('.memory-photo-frame').classList.add('img-missing')">
+          <div class="frame-fallback">🤍</div>
+        </div>
+      </div>
+      <button class="mem-nav mem-next" id="mem-next" aria-label="Next memory">›</button>
+    </div>
+
+    <p class="memory-index" id="memory-index">Memory 01 / 07</p>
+    <p class="memory-caption" id="memory-caption">And somehow, this became one of my favorite moments.</p>
+    <p class="memory-hint">swipe, or use ← →</p>
+
+    <button class="btn btn-ghost btn-next" data-next="quotes">Continue <span aria-hidden="true">→</span></button>
+  </section>
+
+  <!-- ============ SECTION 7 — MINI LOVE QUOTES ============ -->
+  <section id="sec-quotes" class="screen" data-section="quotes">
+    <div class="stars-layer" aria-hidden="true"></div>
+    <div class="quotes-wrap">
+      <p class="quote-line reveal-el">I don't need a perfect story.<br>I just want a story where you're there.</p>
+      <p class="quote-line reveal-el">You are one of those rare people<br>who make my heart feel at home.</p>
+      <p class="quote-line reveal-el">If memories could be hugged,<br>I'd keep these moments forever.</p>
+      <p class="quote-line reveal-el">In a world full of temporary things,<br>I hope we become something lasting.</p>
+      <p class="quote-line reveal-el">You are not just a beautiful memory.<br>You are a beautiful part of my life.</p>
+    </div>
+    <button class="btn btn-ghost btn-next" data-next="pause">Continue <span aria-hidden="true">→</span></button>
+  </section>
+
+  <!-- ============ SECTION 8 — EMOTIONAL PAUSE ============ -->
+  <section id="sec-pause" class="screen dark-mode" data-section="pause">
+    <div class="stars-layer stars-layer-quiet" aria-hidden="true"></div>
+    <div class="moon" aria-hidden="true"></div>
+    <p class="pause-line reveal-el">But honestly&hellip;</p>
+    <p class="pause-line reveal-el">A birthday wish isn't enough to explain what you mean to me.</p>
+    <p class="pause-line reveal-el">So I wrote you something&hellip;</p>
+    <button id="btn-open-heart" class="btn btn-primary btn-glow">Open My Heart <span aria-hidden="true">💌</span></button>
+  </section>
+
+  <!-- ============ SECTION 9 — FINAL LETTER ============ -->
+  <section id="sec-letter" class="screen dark-mode" data-section="letter">
+    <div class="letter-bg" aria-hidden="true"></div>
+
+    <div id="envelope" class="envelope">
+      <div class="envelope-flap"></div>
+      <div class="envelope-body">
+        <span class="envelope-heart">🤍</span>
+      </div>
+      <button id="btn-open-letter" class="btn btn-primary">Open Letter <span aria-hidden="true">💌</span></button>
+    </div>
+
+    <div id="letter-card" class="letter-card">
+      <div class="letter-inner" id="letter-inner"></div>
+      <button id="btn-letter-continue" class="btn btn-ghost letter-continue hidden">Continue <span aria-hidden="true">→</span></button>
+    </div>
+  </section>
+
+  <!-- ============ SECTION 10 — FINAL CINEMATIC MESSAGE ============ -->
+  <section id="sec-final" class="screen dark-mode" data-section="final">
+    <div class="stars-layer stars-layer-quiet" aria-hidden="true"></div>
+    <div class="final-heart" aria-hidden="true">🤍</div>
+    <p class="final-line" data-line="1">One last thing&hellip;</p>
+    <p class="final-line" data-line="2">If I had to choose my favorite person&hellip;</p>
+    <p class="final-line" data-line="3">I'd choose you.</p>
+    <p class="final-line final-big" data-line="4">Always you. 🤍</p>
+    <p class="final-line final-title" data-line="5">Happy Birthday, Zaha 🎂✨</p>
+  </section>
+
+  <!-- ============ SECTION 11 — FOREVER MESSAGE ============ -->
+  <section id="sec-forever" class="screen dark-mode" data-section="forever">
+    <div class="stars-layer stars-layer-quiet" aria-hidden="true"></div>
+    <div class="moon moon-small" aria-hidden="true"></div>
+    <p class="forever-line reveal-el">This little website will end here&hellip;</p>
+    <p class="forever-line reveal-el">but my favorite memories with you&hellip;</p>
+    <p class="forever-line forever-emphasis reveal-el">&hellip;I hope they never do.</p>
+    <p class="forever-title reveal-el">Happy Birthday, my love. 🥹🫶🏻🤍</p>
+    <p class="forever-small reveal-el">30 • 08 • — the day the world got a little more beautiful.</p>
+
+    <button id="btn-replay" class="btn btn-ghost replay-btn">Replay Our Little Story <span aria-hidden="true">↻</span></button>
+  </section>
+
+</main>
+
+<!-- audio elements (all optional — silently ignored if missing) -->
+<audio id="audio-music" src="assets/audio/birthday-music.mp3" loop preload="none"></audio>
+<audio id="audio-chime" src="assets/audio/magic-chime.mp3" preload="none"></audio>
+<audio id="audio-heartbeat" src="assets/audio/heartbeat.mp3" preload="none"></audio>
+<audio id="audio-cake" src="assets/audio/cake-pop.mp3" preload="none"></audio>
+<audio id="audio-candle" src="assets/audio/candle-blow.mp3" preload="none"></audio>
+<audio id="audio-sparkle" src="assets/audio/sparkle.mp3" preload="none"></audio>
+<audio id="audio-pageflip" src="assets/audio/page-flip.mp3" preload="none"></audio>
+<audio id="audio-letter" src="assets/audio/letter-reveal.mp3" preload="none"></audio>
+<audio id="audio-finallove" src="assets/audio/final-love.mp3" preload="none"></audio>
+
+<script src="script.js"></script>
+</body>
+</html>

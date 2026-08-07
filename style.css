@@ -1,0 +1,521 @@
+/* ============================================================
+   FOR ZAHA — a little world, just for you
+   ============================================================
+   Design tokens
+   ============================================================ */
+:root{
+  --plum-deep:      #2c1832;
+  --plum:            #3d2246;
+  --plum-soft:      #55305f;
+  --blush:          #f7d9de;
+  --blush-soft:     #fbe8ea;
+  --dusty-rose:     #e3a9b4;
+  --lavender:       #d6c3ef;
+  --lavender-soft:  #eae1f9;
+  --champagne:      #e8c88a;
+  --cream:          #fbf4ea;
+  --plum-text:      #3a2140;
+
+  --glass-bg: rgba(255,255,255,0.14);
+  --glass-border: rgba(255,255,255,0.28);
+  --glass-bg-light: rgba(255,255,255,0.55);
+  --glass-border-light: rgba(255,255,255,0.6);
+
+  --font-display: 'Playfair Display', serif;
+  --font-serif: 'Cormorant Garamond', serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-script: 'Great Vibes', cursive;
+
+  --ease: cubic-bezier(.22,.68,.32,1);
+  --ease-soft: cubic-bezier(.4,0,.2,1);
+}
+
+*{ box-sizing: border-box; }
+html,body{
+  margin:0; padding:0;
+  width:100%; overflow-x:hidden;
+  background: radial-gradient(ellipse at 30% 10%, #4a2a52 0%, var(--plum) 45%, var(--plum-deep) 100%);
+  color: var(--cream);
+  font-family: var(--font-body);
+  -webkit-font-smoothing:antialiased;
+  scroll-behavior:smooth;
+}
+body{ min-height:100vh; position:relative; }
+
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{
+    animation-duration: .001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .001ms !important;
+    scroll-behavior:auto !important;
+  }
+}
+
+::selection{ background: var(--dusty-rose); color: var(--plum-deep); }
+
+/* ============================================================
+   AMBIENT BACKGROUND LAYERS
+   ============================================================ */
+#bg-canvas{
+  position:fixed; inset:0; width:100%; height:100%;
+  z-index:0; pointer-events:none;
+}
+#floating-hearts{
+  position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden;
+}
+.floating-heart{
+  position:absolute; bottom:-40px; opacity:0;
+  font-size: 18px; color: var(--blush);
+  animation: heartRise linear forwards;
+  will-change: transform, opacity;
+}
+.floating-heart svg{ display:block; filter: drop-shadow(0 0 6px rgba(247,217,222,.5)); }
+@keyframes heartRise{
+  0%{ transform: translateY(0) translateX(0) rotate(0deg) scale(.8); opacity:0; }
+  10%{ opacity:.85; }
+  85%{ opacity:.55; }
+  100%{ transform: translateY(-110vh) translateX(var(--drift,20px)) rotate(20deg) scale(1.1); opacity:0; }
+}
+
+.stars-layer{
+  position:absolute; inset:0; overflow:hidden; z-index:0; pointer-events:none;
+}
+.stars-layer::before,
+.stars-layer::after{
+  content:""; position:absolute; inset:0;
+  background-image:
+    radial-gradient(1.5px 1.5px at 20% 30%, rgba(255,255,255,.9), transparent),
+    radial-gradient(1px 1px at 70% 15%, rgba(255,255,255,.7), transparent),
+    radial-gradient(2px 2px at 85% 60%, rgba(255,255,255,.8), transparent),
+    radial-gradient(1px 1px at 40% 80%, rgba(255,255,255,.6), transparent),
+    radial-gradient(1.5px 1.5px at 10% 65%, rgba(255,255,255,.7), transparent),
+    radial-gradient(1px 1px at 55% 45%, rgba(255,255,255,.55), transparent),
+    radial-gradient(1.5px 1.5px at 92% 25%, rgba(255,255,255,.7), transparent),
+    radial-gradient(1px 1px at 30% 10%, rgba(255,255,255,.6), transparent);
+  background-repeat:no-repeat;
+  animation: twinkle 4.5s ease-in-out infinite alternate;
+}
+.stars-layer::after{ animation-delay: 1.2s; opacity:.5; transform: scale(1.4) translateY(10%); }
+@keyframes twinkle{ from{ opacity:.4; } to{ opacity:1; } }
+.stars-layer-quiet::before,.stars-layer-quiet::after{ opacity:.35; }
+
+.moon{
+  position:absolute; top:8%; right:12%;
+  width:70px; height:70px; border-radius:50%;
+  background: radial-gradient(circle at 35% 30%, #fff8ea, var(--champagne) 70%);
+  box-shadow: 0 0 40px 10px rgba(232,200,138,.35), 0 0 90px 30px rgba(232,200,138,.12);
+  z-index:0;
+}
+.moon-small{ width:46px; height:46px; top:10%; }
+
+/* soft bokeh circles ambient */
+body::before{
+  content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(220px 220px at 15% 20%, rgba(214,195,239,.14), transparent 70%),
+    radial-gradient(260px 260px at 85% 75%, rgba(227,169,180,.14), transparent 70%),
+    radial-gradient(180px 180px at 70% 15%, rgba(232,200,138,.10), transparent 70%);
+  animation: bokehDrift 14s ease-in-out infinite alternate;
+}
+@keyframes bokehDrift{
+  from{ transform: translate(0,0); }
+  to{ transform: translate(-15px, 10px); }
+}
+
+/* ============================================================
+   LAYOUT / SCREENS
+   ============================================================ */
+#app{ position:relative; z-index:2; height:100svh; height:100vh; }
+.screen{
+  position:absolute; inset:0;
+  height:100svh; height:100vh; width:100%;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; padding: 8vh 6vw 10vh;
+  overflow-y:auto;
+  opacity:0; visibility:hidden;
+  pointer-events:none;
+}
+.screen.active{
+  opacity:1; visibility:visible; pointer-events:auto;
+  animation: screenIn .9s var(--ease) both;
+}
+@keyframes screenIn{
+  from{ opacity:0; filter: blur(6px); transform: translateY(14px) scale(.99); }
+  to{ opacity:1; filter: blur(0); transform: translateY(0) scale(1); }
+}
+.screen.leaving{
+  animation: screenOut .6s var(--ease-soft) both;
+}
+@keyframes screenOut{
+  from{ opacity:1; filter: blur(0); }
+  to{ opacity:0; filter: blur(6px); transform: translateY(-10px); }
+}
+.dark-mode{
+  background: radial-gradient(ellipse at 50% 0%, #241428 0%, #170d1c 70%);
+}
+
+/* reveal-on-load micro animation, staggered via JS with .in class */
+.reveal-el{ opacity:0; transform: translateY(16px); filter: blur(4px); }
+.reveal-el.in{
+  animation: revealUp .8s var(--ease) forwards;
+}
+@keyframes revealUp{
+  to{ opacity:1; transform: translateY(0); filter: blur(0); }
+}
+
+/* ============================================================
+   TYPOGRAPHY
+   ============================================================ */
+h1,h2{ font-family: var(--font-display); font-weight:600; margin:0; }
+.eyebrow{
+  font-family: var(--font-body); letter-spacing:.18em; text-transform:uppercase;
+  font-size:.68rem; color: var(--lavender); opacity:.8; margin: 0 0 14px;
+}
+.accent-text{
+  background: linear-gradient(120deg, var(--champagne), var(--dusty-rose));
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+.script-name{ font-family: var(--font-script); font-size:1.35em; color: var(--champagne); }
+.sparkle{ display:inline-block; }
+
+/* ============================================================
+   GLASS CARD / BUTTONS
+   ============================================================ */
+.glass-card{
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border-radius: 28px;
+  padding: 44px 34px;
+  max-width: 440px;
+  width:100%;
+  box-shadow: 0 20px 60px -20px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.15);
+}
+.welcome-card .line{ font-family: var(--font-serif); font-size:1.35rem; margin: 10px 0; color: var(--cream); }
+.welcome-card .line-1{ font-family: var(--font-display); font-size:1.9rem; font-style:italic; }
+
+.btn{
+  font-family: var(--font-body);
+  font-size: .95rem;
+  letter-spacing:.02em;
+  padding: 15px 30px;
+  border-radius: 999px;
+  border: 1px solid var(--glass-border-light);
+  cursor:pointer;
+  position:relative;
+  overflow:hidden;
+  transition: transform .25s var(--ease), box-shadow .25s var(--ease), background .25s var(--ease);
+  -webkit-tap-highlight-color: transparent;
+  min-height:48px;
+}
+.btn-primary{
+  margin-top: 26px;
+  background: linear-gradient(135deg, var(--dusty-rose), var(--lavender));
+  color: var(--plum-deep);
+  font-weight:500;
+  box-shadow: 0 10px 30px -8px rgba(227,169,180,.55);
+}
+.btn-primary:hover{ transform: translateY(-2px) scale(1.02); box-shadow: 0 14px 34px -6px rgba(227,169,180,.7); }
+.btn-primary:active{ transform: translateY(0) scale(.97); }
+.btn-glow{ animation: btnPulse 2.6s ease-in-out infinite; }
+@keyframes btnPulse{
+  0%,100%{ box-shadow: 0 10px 30px -8px rgba(227,169,180,.5); }
+  50%{ box-shadow: 0 10px 40px -4px rgba(227,169,180,.85); }
+}
+.btn-ghost{
+  margin-top: 30px;
+  background: rgba(255,255,255,.08);
+  color: var(--cream);
+}
+.btn-ghost:hover{ background: rgba(255,255,255,.16); transform: translateY(-2px); }
+.btn-ghost:active{ transform: translateY(0) scale(.97); }
+.btn:focus-visible{ outline: 2px solid var(--champagne); outline-offset: 3px; }
+
+.btn::after{
+  content:""; position:absolute; inset:0; border-radius:inherit;
+  background: radial-gradient(circle, rgba(255,255,255,.5) 0%, transparent 60%);
+  opacity:0; transform: scale(0);
+  transition: opacity .5s, transform .5s;
+}
+.btn.rippling::after{ opacity:.6; transform: scale(2.4); transition: opacity .6s ease, transform .6s ease; }
+
+/* music button */
+.music-btn{
+  position: fixed; bottom: 22px; right: 20px; z-index: 50;
+  width: 52px; height: 52px; border-radius: 50%;
+  background: var(--glass-bg); border:1px solid var(--glass-border);
+  backdrop-filter: blur(14px);
+  color: var(--cream); font-size: 1.3rem;
+  display:flex; align-items:center; justify-content:center;
+  cursor:pointer; transition: transform .3s var(--ease), opacity .4s;
+  box-shadow: 0 8px 24px -8px rgba(0,0,0,.5);
+}
+.music-btn.hidden{ opacity:0; pointer-events:none; transform: scale(.7); }
+.music-btn:hover{ transform: scale(1.08); }
+.music-note{ display:inline-block; animation: notePulse 2.4s ease-in-out infinite; }
+.music-btn.muted .music-note{ opacity:.4; animation:none; }
+@keyframes notePulse{ 0%,100%{ transform: scale(1);} 50%{ transform: scale(1.18);} }
+
+/* ============================================================
+   SECTION 1 — INTRO
+   ============================================================ */
+.intro-text-wrap{ max-width: 620px; }
+.intro-line{
+  font-family: var(--font-serif); font-size: clamp(1.2rem, 4vw, 1.7rem);
+  color: var(--blush-soft); margin: 22px 0; opacity:0;
+  filter: blur(6px); transform: translateY(18px);
+}
+.intro-line.in{ animation: revealUp 1s var(--ease) forwards; }
+.intro-big{ font-family: var(--font-display); font-size: clamp(1.8rem, 6vw, 2.6rem); font-style:italic; }
+.intro-title{ font-family: var(--font-display); font-size: clamp(1.6rem,5.5vw,2.3rem); color: var(--champagne); }
+
+/* ============================================================
+   SECTION 2 — PHOTO REVEAL
+   ============================================================ */
+.pre-caption{ font-family: var(--font-serif); font-size:1.3rem; color: var(--lavender-soft); margin-bottom: 26px; }
+.photo-frame{
+  position:relative; width: min(320px, 78vw); aspect-ratio: 4/5;
+  border-radius: 26px; overflow:hidden;
+  border: 1px solid var(--glass-border-light);
+  box-shadow: 0 25px 60px -18px rgba(0,0,0,.55);
+  background: var(--glass-bg);
+}
+.photo-frame img{
+  width:100%; height:100%; object-fit:cover; display:block;
+  animation: gentleZoom 12s ease-in-out infinite alternate;
+}
+@keyframes gentleZoom{ from{ transform: scale(1);} to{ transform: scale(1.08);} }
+.photo-glow{
+  position:absolute; inset:-30%; z-index:-1;
+  background: radial-gradient(circle, rgba(227,169,180,.5), transparent 65%);
+  filter: blur(30px);
+}
+.light-sweep{
+  position:absolute; top:0; left:-60%; width:40%; height:100%;
+  background: linear-gradient(100deg, transparent, rgba(255,255,255,.35), transparent);
+  animation: sweep 3.2s ease-in-out 1;
+  pointer-events:none;
+}
+@keyframes sweep{ to{ left: 130%; } }
+.frame-fallback{ display:none; position:absolute; inset:0; align-items:center; justify-content:center; font-size:3rem; background: linear-gradient(135deg, var(--plum-soft), var(--plum)); }
+.img-missing img{ display:none; }
+.img-missing .frame-fallback{ display:flex; }
+.post-caption{ font-family: var(--font-display); font-size:1.6rem; margin-top: 22px; color: var(--cream); }
+.small-caption{ font-family: var(--font-serif); font-size:1.05rem; color: var(--lavender-soft); max-width: 400px; margin-top:10px; opacity:.9; }
+
+/* ============================================================
+   SECTION 3 — DATE
+   ============================================================ */
+.date-display{
+  display:flex; align-items:center; gap: 14px;
+  font-family: var(--font-display); font-weight:600;
+  font-size: clamp(2.4rem, 12vw, 4.6rem);
+}
+.date-num{
+  color: var(--champagne);
+  text-shadow: 0 0 30px rgba(232,200,138,.55);
+  animation: numPulse 3s ease-in-out infinite;
+}
+.date-num:nth-child(3){ animation-delay:.3s; }
+.date-infinity{ font-family: var(--font-display); }
+@keyframes numPulse{ 0%,100%{ text-shadow: 0 0 20px rgba(232,200,138,.4);} 50%{ text-shadow: 0 0 40px rgba(232,200,138,.75);} }
+.date-dot{ color: var(--dusty-rose); font-size:.6em; }
+.date-caption{ font-family: var(--font-serif); font-size:1.3rem; margin-top: 26px; max-width: 420px; color: var(--blush-soft); }
+.date-caption-2{ color: var(--champagne); font-size:1.4rem; }
+
+/* ============================================================
+   SECTION 4 — CAKE
+   ============================================================ */
+.cake-line{ font-family: var(--font-serif); font-size:1.4rem; margin:6px 0; color: var(--blush-soft); }
+.cake-wrap{ margin: 28px 0; filter: drop-shadow(0 20px 30px rgba(0,0,0,.4)); }
+.cake-svg{ width: min(260px, 70vw); height:auto; }
+.cake-shadow{ fill: rgba(0,0,0,.35); }
+.cake-tier-2{ fill: #f6e3e7; }
+.cake-tier-1{ fill: #fdf1ec; }
+.cake-drip{ fill:none; stroke:#e3a9b4; stroke-width:6; stroke-linecap:round; }
+.cake-berry{ fill:#c23b57; }
+.candle{ fill: var(--champagne); }
+.flame{
+  fill: #ffce7a;
+  filter: drop-shadow(0 0 6px rgba(255,206,122,.9));
+  transform-origin: center bottom;
+  animation: flameFlicker 1.4s ease-in-out infinite alternate;
+  transition: opacity .4s ease, transform .4s ease;
+}
+@keyframes flameFlicker{ from{ transform: scale(1) rotate(-2deg);} to{ transform: scale(1.12) rotate(2deg);} }
+.candle-group.blown .flame{ opacity:0; transform: scale(0); }
+.cake-aftermath{
+  max-width: 440px; margin-top: 10px;
+  max-height:0; overflow:hidden; opacity:0;
+  transition: max-height 1s var(--ease), opacity 1s var(--ease), margin 1s var(--ease);
+}
+.cake-aftermath.show{ max-height: 200px; opacity:1; margin-top: 24px; }
+.cake-after-line{ font-family: var(--font-serif); font-size:1.25rem; color: var(--blush-soft); margin:8px 0; }
+.cake-after-line-2{ font-family: var(--font-display); font-size:1.5rem; color: var(--champagne); }
+#btn-wish.spent{ display:none; }
+
+/* ============================================================
+   SECTION 5 — CELEBRATE
+   ============================================================ */
+.celebrate-title{ font-size: clamp(1.8rem, 6vw, 2.6rem); color: var(--champagne); }
+.celebrate-sub{ font-family: var(--font-serif); font-size:1.25rem; max-width: 420px; margin-top:14px; color: var(--blush-soft); }
+.scroll-indicator{ margin-top:40px; width:52px; height:52px; border-radius:50%; padding:0; display:flex; align-items:center; justify-content:center; }
+.chevron{ animation: bounceDown 1.8s ease-in-out infinite; font-size:1.4rem; }
+@keyframes bounceDown{ 0%,100%{ transform: translateY(0);} 50%{ transform: translateY(6px);} }
+
+/* confetti (JS-generated pieces) */
+.confetti-piece{
+  position: fixed; top:-20px; z-index: 40; pointer-events:none;
+  border-radius: 2px;
+  animation: confettiFall linear forwards;
+}
+@keyframes confettiFall{
+  to{ transform: translateY(110vh) translateX(var(--drift,0)) rotate(var(--spin,180deg)); opacity: .2; }
+}
+
+/* ============================================================
+   SECTION 6 — MEMORIES
+   ============================================================ */
+.memories-title{ font-size: clamp(1.7rem, 5.5vw, 2.3rem); color: var(--cream); }
+.memories-sub{ font-family: var(--font-serif); font-size:1.1rem; color: var(--lavender-soft); margin: 12px 0 30px; line-height:1.5; }
+.memory-viewer{
+  display:flex; align-items:center; justify-content:center; gap: 14px;
+  width:100%; max-width: 480px;
+}
+.memory-photo-wrap{ width: min(300px, 62vw); }
+.memory-photo-frame{
+  position:relative; width:100%; aspect-ratio: 4/5; border-radius:22px; overflow:hidden;
+  border: 1px solid var(--glass-border-light);
+  box-shadow: 0 20px 50px -16px rgba(0,0,0,.55);
+  background: var(--glass-bg);
+  touch-action: pan-y;
+}
+.memory-photo-frame img{
+  width:100%; height:100%; object-fit:cover; display:block;
+  animation: memFade .6s var(--ease-soft);
+}
+@keyframes memFade{ from{ opacity:0; filter: blur(10px) brightness(1.3); transform: scale(1.05);} to{ opacity:1; filter: blur(0) brightness(1); transform: scale(1);} }
+.mem-nav{
+  flex:0 0 auto; width:42px; height:42px; border-radius:50%;
+  background: var(--glass-bg); border:1px solid var(--glass-border);
+  color: var(--cream); font-size:1.4rem; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  transition: transform .2s var(--ease), background .2s;
+}
+.mem-nav:hover{ background: rgba(255,255,255,.2); transform: scale(1.08); }
+.mem-nav:active{ transform: scale(.9); }
+.memory-index{ font-family: var(--font-body); letter-spacing:.1em; font-size:.75rem; color: var(--champagne); text-transform:uppercase; margin-top: 20px; }
+.memory-caption{ font-family: var(--font-serif); font-size:1.25rem; color: var(--blush-soft); max-width: 380px; margin: 8px 0 0; min-height: 2.6em; }
+.memory-hint{ font-size:.72rem; color: rgba(255,255,255,.4); margin-top: 10px; }
+
+/* ============================================================
+   SECTION 7 — QUOTES
+   ============================================================ */
+.quotes-wrap{ max-width: 480px; display:flex; flex-direction:column; gap: 34px; }
+.quote-line{
+  font-family: var(--font-serif); font-style: italic;
+  font-size: clamp(1.15rem, 4vw, 1.5rem);
+  color: var(--blush-soft); line-height:1.5;
+  position:relative; padding: 0 10px;
+}
+
+/* ============================================================
+   SECTION 8 — EMOTIONAL PAUSE
+   ============================================================ */
+.pause-line{ font-family: var(--font-serif); font-size:1.35rem; color: var(--lavender-soft); margin: 12px 0; max-width: 460px; }
+
+/* ============================================================
+   SECTION 9 — LETTER
+   ============================================================ */
+.letter-bg{
+  position:absolute; inset:0; z-index:0;
+  background: radial-gradient(ellipse at 50% 30%, rgba(232,200,138,.10), transparent 60%);
+}
+.envelope{
+  position:relative; z-index:2;
+  display:flex; flex-direction:column; align-items:center;
+  transition: opacity .6s var(--ease), transform .6s var(--ease);
+}
+.envelope.opened{ opacity:0; transform: scale(.85) translateY(-20px); pointer-events:none; position:absolute; }
+.envelope-body{
+  width: 220px; height: 140px; border-radius: 10px;
+  background: linear-gradient(160deg, var(--cream), var(--blush));
+  position:relative; box-shadow: 0 20px 50px -14px rgba(0,0,0,.6);
+  display:flex; align-items:center; justify-content:center;
+}
+.envelope-heart{ font-size:1.6rem; z-index:2; animation: heartbeatSoft 2.2s ease-in-out infinite; }
+@keyframes heartbeatSoft{ 0%,100%{ transform: scale(1);} 50%{ transform: scale(1.15);} }
+.envelope-flap{
+  position:absolute; top:-70px; left:0; width:220px; height:70px;
+  background: linear-gradient(200deg, var(--blush-soft), var(--dusty-rose));
+  clip-path: polygon(0 0, 50% 100%, 100% 0);
+  transform-origin: top center;
+  box-shadow: 0 6px 16px rgba(0,0,0,.25);
+}
+.envelope.opening .envelope-flap{ animation: flapOpen .7s var(--ease-soft) forwards; }
+@keyframes flapOpen{ to{ transform: rotateX(180deg); } }
+#btn-open-letter{ margin-top: 28px; }
+
+.letter-card{
+  position:relative; z-index:2;
+  max-width: 560px; width: 92%;
+  background: linear-gradient(180deg, var(--cream), var(--blush-soft));
+  color: var(--plum-text);
+  border-radius: 18px;
+  padding: 40px 30px;
+  box-shadow: 0 30px 80px -20px rgba(0,0,0,.6);
+  max-height: 0; overflow:hidden; opacity:0;
+  transition: max-height 1s var(--ease), opacity 1s var(--ease), padding 1s var(--ease);
+}
+.letter-card.show{
+  max-height: 3200px; opacity:1;
+  padding: 40px 30px 46px;
+  overflow-y:auto;
+  max-height: 74svh;
+}
+.letter-inner{ font-family: var(--font-serif); font-size: 1.15rem; line-height:1.75; text-align:left; }
+.letter-inner p{ margin: 0 0 14px; opacity:0; transform: translateY(8px); animation: letterLine .6s var(--ease) forwards; }
+.letter-inner .l-sig{ font-family: var(--font-script); font-size:1.7rem; color: #7a4a56; }
+@keyframes letterLine{ to{ opacity:1; transform: translateY(0); } }
+.letter-continue{ margin-top: 18px; color: var(--plum-text); background: rgba(122,74,86,.1); border-color: rgba(122,74,86,.25); }
+.letter-continue.hidden{ display:none; }
+
+/* ============================================================
+   SECTION 10 — FINAL MESSAGE
+   ============================================================ */
+.final-heart{ font-size: 2.6rem; margin-bottom: 20px; opacity:0; animation: revealUp 1s var(--ease) forwards; filter: drop-shadow(0 0 20px rgba(247,217,222,.5)); }
+.final-line{
+  font-family: var(--font-serif); font-size: 1.4rem; color: var(--blush-soft);
+  margin: 10px 0; opacity:0; filter: blur(6px); transform: translateY(14px);
+}
+.final-line.in{ animation: revealUp .9s var(--ease) forwards; }
+.final-big{ font-family: var(--font-display); font-size: clamp(2.2rem, 8vw, 3.4rem); color: var(--champagne); font-style: italic; }
+.final-title{ font-family: var(--font-display); font-size: clamp(1.5rem, 5vw, 2rem); color: var(--cream); }
+
+/* ============================================================
+   SECTION 11 — FOREVER
+   ============================================================ */
+.forever-line{ font-family: var(--font-serif); font-size:1.3rem; color: var(--lavender-soft); margin: 8px 0; }
+.forever-emphasis{ color: var(--champagne); font-size:1.4rem; }
+.forever-title{ font-family: var(--font-display); font-size: clamp(1.4rem,5vw,1.9rem); color: var(--cream); margin-top:26px; }
+.forever-small{ font-size:.78rem; letter-spacing:.08em; color: rgba(255,255,255,.5); margin-top:14px; text-transform: uppercase; }
+.replay-btn{ margin-top: 42px; }
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 420px){
+  .screen{ padding: 6vh 6vw 8vh; }
+  .glass-card{ padding: 34px 24px; }
+  .memory-viewer{ gap: 8px; }
+  .mem-nav{ width:36px; height:36px; font-size:1.2rem; }
+}
+@media (min-width: 900px){
+  .screen{ padding: 8vh 10vw; }
+  .glass-card{ max-width: 480px; }
+  .letter-card{ max-width: 640px; }
+}
+
+/* utility */
+.hidden{ display:none !important; }
